@@ -9,22 +9,20 @@ const client = new Client({
   ]
 });
 
-// Load from environment variables
+// Environment variables
 const TOKEN = process.env.DISCORD_TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
 
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}`);
   
-  // Schedule task for every Thursday at 10pm EST (which is 2am UTC on Friday during standard time)
-  // Cron format: minute hour day-of-month month day-of-week
-  // This runs at 10pm EST (adjust for daylight saving time if needed)
+  // Thursday at 10pm EST
   cron.schedule('0 22 * * 4', async () => {
     try {
       const channel = await client.channels.fetch(CHANNEL_ID);
       
       if (channel) {
-        // Find the role by name
+        // Find role
         const guild = channel.guild;
         const role = guild.roles.cache.find(r => r.name === 'Accountability Thursday');
         
@@ -39,7 +37,7 @@ client.once('ready', () => {
       console.error('Error sending message:', error);
     }
   }, {
-    timezone: 'America/New_York' // EST/EDT timezone
+    timezone: 'America/New_York' // EST
   });
   
   console.log('Accountability Thursday bot is running!');
